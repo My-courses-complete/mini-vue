@@ -3,33 +3,60 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Hola Mundo!</title>
+    <title>PlatziCommerce</title>
+    <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div id="app">
-      <span p-text="message"></span>
-      <br />
-      <input type="text" p-model="message" />
-      <br />
-      <img p-bind:src="image" />
-      <br />
-      <input type="text" p-model="image" />
+    <div class="app">
+      <header>
+        <h3>PlatziCommerce</h3>
+        <button class="cart">Carro (0)</button>
+        <div class="cart-content">
+          <div class="cart-content__product">
+            <img src="" alt="" />
+            <span>Producto - $ 500.000</span>
+          </div>
+          <div class="cart-content__product">
+            <img src="" alt="" />
+            <span>Producto - $ 500.000</span>
+          </div>
+        </div>
+      </header>
+      <main>
+        <section class="product">
+          <div class="product__thumbnails">
+            <div class="thumb"></div>
+            <div class="thumb"></div>
+          </div>
+          <div class="product__image">
+            <img src="" alt="" />
+          </div>
+        </section>
+        <section class="description">
+          <h4>Producto</h4>
+          <span class="badge new">Nuevo</span>
+          <span class="badge offer">Oferta</span>
+          <p class="description__status"></p>
+          <p class="description__price">$ 500.000</p>
+          <p class="description__content">
+            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Veritatis
+            velit sequi adipisci, laboriosam minima dignissimos eius facere
+            iste, distinctio fugiat dicta voluptatibus, fuga officiis vel saepe
+            perspiciatis nobis quam? Autem!
+          </p>
+          <div class="discount">
+            <span>Codigo de descuento:</span>
+            <input type="text" placeholder="Ingresa tu codigo" />
+          </div>
+        </section>
+      </main>
     </div>
-
-    <script src="./platzi.js"></script>
-    <script>
-      const { createApp } = Platzi;
-
-      const app = createApp({
-        data() {
-          return {
-            message: "Hola Platzi!",
-            image:
-              "https://www.manejandodatos.es/wp-content/uploads/2018/02/vueJS.png",
-          };
-        },
-      });
-      app.mount();
-    </script>
   </body>
+  <script src="https://unpkg.com/vue@next"></script>
+  <script>
+    const { createApp } = Vue;
+
+    const app = createApp();
+    app.mount("#app");
+  </script>
 </html>
