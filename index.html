@@ -10,6 +10,10 @@
       <span p-text="message"></span>
       <br />
       <input type="text" p-model="message" />
+      <br />
+      <img p-bind:src="image" />
+      <br />
+      <input type="text" p-model="image" />
     </div>
 
     <script src="./platzi.js"></script>
@@ -20,6 +24,8 @@
         data() {
           return {
             message: "Hola Platzi!",
+            image:
+              "https://www.manejandodatos.es/wp-content/uploads/2018/02/vueJS.png",
           };
         },
       });
