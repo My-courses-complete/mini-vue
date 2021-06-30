@@ -11,23 +11,20 @@
       <header>
         <h3>PlatziCommerce</h3>
         <button class="cart">Carro (0)</button>
-        <div class="cart-content">
-          <div class="cart-content__product">
+        <div class="cart-content" v-show="cartOpen">
+          <div
+            class="cart-content__product"
+            v-for="(product, index) in cart"
+            :key="product.name"
+            :class="{ 'bg-gray': index & 1 }"
+          >
             <img
               :src="product.images[0].image"
               :alt="product.name.toUpperCase()"
             />
             <span
-              >{{ product.name }} - $ {{ new Intl.NumberFormat("es-CO").format(product.price) }}</span
-            >
-          </div>
-          <div class="cart-content__product">
-            <img
-              :src="product.images[1].image"
-              :alt="product.name.toUpperCase()"
-            />
-            <span
-              >{{ product.name }} - $ {{ new Intl.NumberFormat("es-CO").format(product.price) }}</span
+              >{{ product.name }} - $ {{ new
+              Intl.NumberFormat("es-CO").format(product.price) }}</span
             >
           </div>
         </div>
@@ -36,14 +33,11 @@
         <section class="product">
           <div class="product__thumbnails">
             <div
+              v-for="(image, index) in product.images"
+              key="image.thumbnail"
               class="thumb"
               :class="{ active: activeImage === 0 }"
-              :style="{ backgroundImage: 'url(' + product.images[0].thumbnail + ')'}"
-            ></div>
-            <div
-              class="thumb"
-              :class="{ active: activeImage === 1 }"
-              :style="{ backgroundImage: 'url(' + product.images[1].thumbnail + ')'}"
+              :style="{ backgroundImage: 'url(' + product.images[index].thumbnail + ')'}"
             ></div>
           </div>
           <div class="product__image">
@@ -52,11 +46,18 @@
         </section>
         <section class="description">
           <h4>
-            {{ product.name.toUpperCase() }} {{ product.stock === 0 ? "no" : "si"}}
+            {{ product.name.toUpperCase() }} {{ product.stock === 0 ? "no" :
+            "si"}}
           </h4>
-          <span class="badge new">Nuevo</span>
-          <span class="badge offer">Oferta</span>
-          <p class="description__status"></p>
+          <span class="badge new" v-if="product.new">Nuevo</span>
+          <span class="badge offer" v-if="product.offer">Oferta</span>
+          <p class="description__status" v-if="product.stock === 3">
+            Quedan pocas unidades!
+          </p>
+          <p class="description__status" v-else-if="product.stock === 2">
+            El producto esta por terminarse
+          </p>
+          <p class="description__status" v-else>Ultima unidad disponible!</p>
           <p class="description__price">
             $ {{ new Intl.NumberFormat("es-CO").format(product.price) }}
           </p>
@@ -70,6 +71,7 @@
             <span>Codigo de descuento:</span>
             <input type="text" placeholder="Ingresa tu codigo" />
           </div>
+          <button :disabled="product.stock === 0">Agregar al carrito</button>
         </section>
       </main>
     </div>
@@ -99,8 +101,76 @@
                 thumbnail: "./images/camara-2-thumb.jpg",
               },
             ],
+            new: true,
+            offer: false,
           },
           activeImage: 0,
+          cartOpen: true,
+          cart: [
+            {
+              name: "Camara",
+              price: 450_000,
+              stock: 0,
+              content: `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Veritatis
+            velit sequi adipisci, laboriosam minima dignissimos eius facere
+            iste, distinctio fugiat dicta voluptatibus, fuga officiis vel saepe
+            perspiciatis nobis quam? Autem!`,
+              images: [
+                {
+                  image: "./images/camara.jpg",
+                  thumbnail: "./images/camara-thumb.jpg",
+                },
+                {
+                  image: "./images/camara-2.jpg",
+                  thumbnail: "./images/camara-2-thumb.jpg",
+                },
+              ],
+              new: true,
+              offer: false,
+            },
+            {
+              name: "Camara",
+              price: 450_000,
+              stock: 0,
+              content: `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Veritatis
+            velit sequi adipisci, laboriosam minima dignissimos eius facere
+            iste, distinctio fugiat dicta voluptatibus, fuga officiis vel saepe
+            perspiciatis nobis quam? Autem!`,
+              images: [
+                {
+                  image: "./images/camara.jpg",
+                  thumbnail: "./images/camara-thumb.jpg",
+                },
+                {
+                  image: "./images/camara-2.jpg",
+                  thumbnail: "./images/camara-2-thumb.jpg",
+                },
+              ],
+              new: true,
+              offer: false,
+            },
+            {
+              name: "Camara",
+              price: 450_000,
+              stock: 0,
+              content: `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Veritatis
+            velit sequi adipisci, laboriosam minima dignissimos eius facere
+            iste, distinctio fugiat dicta voluptatibus, fuga officiis vel saepe
+            perspiciatis nobis quam? Autem!`,
+              images: [
+                {
+                  image: "./images/camara.jpg",
+                  thumbnail: "./images/camara-thumb.jpg",
+                },
+                {
+                  image: "./images/camara-2.jpg",
+                  thumbnail: "./images/camara-2-thumb.jpg",
+                },
+              ],
+              new: true,
+              offer: false,
+            },
+          ],
         };
       },
     });
