@@ -4,9 +4,9 @@ app.component("product", {
       <div class="product__thumbnails">
         <div
           v-for="(image, index) in product.images"
-          key="image.thumbnail"
+          :key="image.thumbnail"
           class="thumb"
-          :class="{ active: activeImage === 0 }"
+          :class="{ active: activeImage === index }"
           :style="{ backgroundImage: 'url(' + product.images[index].thumbnail + ')'}"
           @click="activeImage = index"
         ></div>
@@ -54,31 +54,41 @@ app.component("product", {
     </section>
   `,
   props: ["product"],
-  data() {
-    return {
+  setup(props) {
+    const productState = reactive({
       activeImage: 0,
-      discountCodes: ["PLATZI20", "JMRMEJIA"],
-    };
-  },
-  methods: {
-    applyDiscount(event) {
-      const discountCodeIndex = this.discountCodes.indexOf(event.target.value);
-      if (discountCodeIndex >= 0) {
-        this.product.price /= 2;
-        this.discountCodes.splice(discountCodeIndex, 1);
-      }
-    },
+    });
 
-    addToCart() {
-      const productIndex = this.cart.findIndex(
-        (prod) => prod.name === this.product.name
+    function addToCart() {
+      const productIndex = cartState.cart.findIndex(
+        (prod) => prod.name === props.product.name
       );
       if (productIndex >= 0) {
-        this.cart[productIndex].quantity += 1;
+        cartState.cart[productIndex].quantity += 1;
       } else {
-        this.cart.push(this.product);
+        cartState.cart.push(props.product);
+        console.log(cartState.cart);
       }
-      this.product.stock -= 1;
-    },
+      props.product.stock -= 1;
+    }
+
+    const discountCodes = ref(["PLATZI20", "JMRMEJIA"]);
+
+    function applyDiscount(event) {
+      const discountCodeIndex = discountCodes.value.indexOf(event.target.value);
+      console.log(discountCodeIndex);
+      if (discountCodeIndex >= 0) {
+        props.product.price /= 2;
+        discountCodes.splice(discountCodeIndex, 1);
+      }
+    }
+
+    return {
+      ...toRefs(productState),
+
+      addToCart,
+
+      applyDiscount,
+    };
   },
 });

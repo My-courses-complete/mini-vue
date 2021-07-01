@@ -33,58 +33,11 @@
         </div>
       </header>
       <main>
-        <section class="product">
-          <div class="product__thumbnails">
-            <div
-              v-for="(image, index) in product.images"
-              :key="image.thumbnail"
-              class="thumb"
-              :class="{ active: activeImage === index }"
-              :style="{ backgroundImage: 'url(' + product.images[index].thumbnail + ')'}"
-              @click="activeImage = index"
-            ></div>
-          </div>
-          <div class="product__image">
-            <img :src="product.images[activeImage].image" :alt="product.name" />
-          </div>
-        </section>
-        <section class="description">
-          <h4>
-            {{ product.name.toUpperCase() }} {{ product.stock === 0 ? "no" :
-            "si"}}
-          </h4>
-          <span class="badge new" v-if="product.new">Nuevo</span>
-          <span class="badge offer" v-if="product.offer">Oferta</span>
-          <p class="description__status" v-if="product.stock === 3">
-            Quedan pocas unidades!
-          </p>
-          <p class="description__status" v-else-if="product.stock === 2">
-            El producto esta por terminarse
-          </p>
-          <p class="description__status" v-else-if="product.stock === 1">
-            Ultima unidad disponible!
-          </p>
-          <p class="description__price">
-            $ {{ new Intl.NumberFormat("es-CO").format(product.price) }}
-          </p>
-          <p class="description__content">
-            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Veritatis
-            velit sequi adipisci, laboriosam minima dignissimos eius facere
-            iste, distinctio fugiat dicta voluptatibus, fuga officiis vel saepe
-            perspiciatis nobis quam? Autem!
-          </p>
-          <div class="discount">
-            <span>Codigo de descuento:</span>
-            <input
-              type="text"
-              placeholder="Ingresa tu codigo"
-              @keyup.enter="applyDiscount($event)"
-            />
-          </div>
-          <button :disabled="product.stock === 0" @click="addToCart()">
-            Agregar al carrito
-          </button>
-        </section>
+        <product
+          v-for="product in products"
+          :key="product.name"
+          :product="product"
+        ></product>
       </main>
     </div>
   </body>
@@ -94,15 +47,15 @@
 
     const app = createApp({
       setup() {
-        const productState = reactive({
-          product: {
+        const products = ref([
+          {
             name: "Camara",
             price: 450_000,
             stock: 10,
             content: `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Veritatis
-            velit sequi adipisci, laboriosam minima dignissimos eius facere
-            iste, distinctio fugiat dicta voluptatibus, fuga officiis vel saepe
-            perspiciatis nobis quam? Autem!`,
+              velit sequi adipisci, laboriosam minima dignissimos eius facere
+              iste, distinctio fugiat dicta voluptatibus, fuga officiis vel saepe
+              perspiciatis nobis quam? Autem!`,
             images: [
               {
                 image: "../images/camara.jpg",
@@ -117,48 +70,66 @@
             offer: false,
             quantity: 1,
           },
-          activeImage: 0,
-        });
+          {
+            name: "Camara PL2",
+            price: 350_000,
+            stock: 7,
+            content: `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Veritatis
+              velit sequi adipisci, laboriosam minima dignissimos eius facere
+              iste, distinctio fugiat dicta voluptatibus, fuga officiis vel saepe
+              perspiciatis nobis quam? Autem!`,
+            images: [
+              {
+                image: "../images/camara.jpg",
+                thumbnail: "../images/camara-thumb.jpg",
+              },
+              {
+                image: "../images/camara-2.jpg",
+                thumbnail: "../images/camara-2-thumb.jpg",
+              },
+            ],
+            new: true,
+            offer: false,
+            quantity: 1,
+          },
+          {
+            name: "Camara cheat",
+            price: 150_000,
+            stock: 1,
+            content: `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Veritatis
+              velit sequi adipisci, laboriosam minima dignissimos eius facere
+              iste, distinctio fugiat dicta voluptatibus, fuga officiis vel saepe
+              perspiciatis nobis quam? Autem!`,
+            images: [
+              {
+                image: "../images/camara.jpg",
+                thumbnail: "../images/camara-thumb.jpg",
+              },
+              {
+                image: "../images/camara-2.jpg",
+                thumbnail: "../images/camara-2-thumb.jpg",
+              },
+            ],
+            new: true,
+            offer: false,
+            quantity: 1,
+          },
+        ]);
         const cartState = reactive({
           cartOpen: false,
           cart: [],
         });
 
-        function addToCart() {
-          const productIndex = cartState.cart.findIndex(
-            (prod) => prod.name === productState.product.name
-          );
-          if (productIndex >= 0) {
-            cartState.cart[productIndex].quantity += 1;
-          } else {
-            cartState.cart.push(productState.product);
-            console.log(cartState.cart);
-          }
-          productState.product.stock -= 1;
-        }
-        const discountCodes = ref(["PLATZI20", "JMRMEJIA"]);
-
-        function applyDiscount(event) {
-          const discountCodeIndex = discountCodes.value.indexOf(
-            event.target.value
-          );
-          console.log(discountCodeIndex)
-          if (discountCodeIndex >= 0) {
-            productState.product.price /= 2;
-            discountCodes.splice(discountCodeIndex, 1);
-          }
-        }
-
         return {
-          ...toRefs(productState),
-
           ...toRefs(cartState),
-          addToCart,
 
-          applyDiscount,
+          products,
         };
       },
     });
+  </script>
+  <script src="./product.js"></script>
+  <script>
     app.mount("#app");
   </script>
 </html>
