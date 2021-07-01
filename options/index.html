@@ -4,13 +4,15 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PlatziCommerce</title>
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="../styles.css" />
   </head>
   <body>
     <div id="app">
       <header>
         <h3>PlatziCommerce</h3>
-        <button class="cart" v-on:click="cartOpen = !cartOpen">Carro (0)</button>
+        <button class="cart" v-on:click="cartOpen = !cartOpen">
+          Carro ({{ cart.length }})
+        </button>
         <div class="cart-content" v-show="cartOpen">
           <div
             class="cart-content__product"
@@ -24,7 +26,7 @@
             />
             <span
               >{{ product.name }} - $ {{ new
-              Intl.NumberFormat("es-CO").format(product.price) }}</span
+              Intl.NumberFormat("es-CO").format(product.price) }} ({{ product.quantity }})</span
             >
           </div>
         </div>
@@ -58,7 +60,9 @@
           <p class="description__status" v-else-if="product.stock === 2">
             El producto esta por terminarse
           </p>
-          <p class="description__status" v-else-if="product.stock === 1">Ultima unidad disponible!</p>
+          <p class="description__status" v-else-if="product.stock === 1">
+            Ultima unidad disponible!
+          </p>
           <p class="description__price">
             $ {{ new Intl.NumberFormat("es-CO").format(product.price) }}
           </p>
@@ -70,9 +74,15 @@
           </p>
           <div class="discount">
             <span>Codigo de descuento:</span>
-            <input type="text" placeholder="Ingresa tu codigo" @keyup.enter="product.price /= 2"/>
+            <input
+              type="text"
+              placeholder="Ingresa tu codigo"
+              @keyup.enter="applyDiscount($event)"
+            />
           </div>
-          <button :disabled="product.stock === 0" @click = "product.stock -= 1">Agregar al carrito</button>
+          <button :disabled="product.stock === 0" @click="addToCart()">
+            Agregar al carrito
+          </button>
         </section>
       </main>
     </div>
@@ -87,92 +97,53 @@
           product: {
             name: "Camara",
             price: 450_000,
-            stock: 10,
+            stock: 5,
             content: `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Veritatis
             velit sequi adipisci, laboriosam minima dignissimos eius facere
             iste, distinctio fugiat dicta voluptatibus, fuga officiis vel saepe
             perspiciatis nobis quam? Autem!`,
             images: [
               {
-                image: "./images/camara.jpg",
-                thumbnail: "./images/camara-thumb.jpg",
+                image: "../images/camara.jpg",
+                thumbnail: "../images/camara-thumb.jpg",
               },
               {
-                image: "./images/camara-2.jpg",
-                thumbnail: "./images/camara-2-thumb.jpg",
+                image: "../images/camara-2.jpg",
+                thumbnail: "../images/camara-2-thumb.jpg",
               },
             ],
             new: true,
             offer: false,
+            quantity: 1,
           },
           activeImage: 0,
           cartOpen: true,
-          cart: [
-            {
-              name: "Camara",
-              price: 450_000,
-              stock: 0,
-              content: `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Veritatis
-            velit sequi adipisci, laboriosam minima dignissimos eius facere
-            iste, distinctio fugiat dicta voluptatibus, fuga officiis vel saepe
-            perspiciatis nobis quam? Autem!`,
-              images: [
-                {
-                  image: "./images/camara.jpg",
-                  thumbnail: "./images/camara-thumb.jpg",
-                },
-                {
-                  image: "./images/camara-2.jpg",
-                  thumbnail: "./images/camara-2-thumb.jpg",
-                },
-              ],
-              new: true,
-              offer: false,
-            },
-            {
-              name: "Camara",
-              price: 450_000,
-              stock: 0,
-              content: `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Veritatis
-            velit sequi adipisci, laboriosam minima dignissimos eius facere
-            iste, distinctio fugiat dicta voluptatibus, fuga officiis vel saepe
-            perspiciatis nobis quam? Autem!`,
-              images: [
-                {
-                  image: "./images/camara.jpg",
-                  thumbnail: "./images/camara-thumb.jpg",
-                },
-                {
-                  image: "./images/camara-2.jpg",
-                  thumbnail: "./images/camara-2-thumb.jpg",
-                },
-              ],
-              new: true,
-              offer: false,
-            },
-            {
-              name: "Camara",
-              price: 450_000,
-              stock: 0,
-              content: `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Veritatis
-            velit sequi adipisci, laboriosam minima dignissimos eius facere
-            iste, distinctio fugiat dicta voluptatibus, fuga officiis vel saepe
-            perspiciatis nobis quam? Autem!`,
-              images: [
-                {
-                  image: "./images/camara.jpg",
-                  thumbnail: "./images/camara-thumb.jpg",
-                },
-                {
-                  image: "./images/camara-2.jpg",
-                  thumbnail: "./images/camara-2-thumb.jpg",
-                },
-              ],
-              new: true,
-              offer: false,
-            },
-          ],
+          cart: [],
+          discountCodes: ["PLATZI20", "JMRMEJIA"],
         };
+      },
+      methods: {
+        applyDiscount(event) {
+          const discountCodeIndex = this.discountCodes.indexOf(
+            event.target.value
+          );
+          if (discountCodeIndex >= 0) {
+            this.product.price /= 2;
+            this.discountCodes.splice(discountCodeIndex, 1);
+          }
+        },
+
+        addToCart() {
+          const productIndex = this.cart.findIndex(
+            (prod) => prod.name === this.product.name
+          );
+          if (productIndex >= 0) {
+            this.cart[productIndex].quantity += 1;
+          } else {
+            this.cart.push(this.product);
+          }
+          this.product.stock -= 1;
+        },
       },
     });
     app.mount("#app");
