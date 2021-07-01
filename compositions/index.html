@@ -90,49 +90,51 @@
   </body>
   <script src="https://unpkg.com/vue@next"></script>
   <script>
-    const { createApp, ref } = Vue;
+    const { createApp, ref, reactive, toRefs } = Vue;
 
     const app = createApp({
       setup() {
-        const product = ref({
-          name: "Camara",
-          price: 450_000,
-          stock: 10,
-          content: `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Veritatis
+        const productState = reactive({
+          product: {
+            name: "Camara",
+            price: 450_000,
+            stock: 10,
+            content: `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Veritatis
             velit sequi adipisci, laboriosam minima dignissimos eius facere
             iste, distinctio fugiat dicta voluptatibus, fuga officiis vel saepe
             perspiciatis nobis quam? Autem!`,
-          images: [
-            {
-              image: "../images/camara.jpg",
-              thumbnail: "../images/camara-thumb.jpg",
-            },
-            {
-              image: "../images/camara-2.jpg",
-              thumbnail: "../images/camara-2-thumb.jpg",
-            },
-          ],
-          new: true,
-          offer: false,
-          quantity: 1,
+            images: [
+              {
+                image: "../images/camara.jpg",
+                thumbnail: "../images/camara-thumb.jpg",
+              },
+              {
+                image: "../images/camara-2.jpg",
+                thumbnail: "../images/camara-2-thumb.jpg",
+              },
+            ],
+            new: true,
+            offer: false,
+            quantity: 1,
+          },
+          activeImage: 0,
+        });
+        const cartState = reactive({
+          cartOpen: false,
+          cart: [],
         });
 
-        const activeImage = ref(0);
-
-        const cartOpen = ref(false);
-        const cart = ref([]);
-
         function addToCart() {
-          const productIndex = cart.value.findIndex(
-            (prod) => prod.name === product.value.name
+          const productIndex = cartState.cart.findIndex(
+            (prod) => prod.name === productState.product.name
           );
           if (productIndex >= 0) {
-            cart.value[productIndex].quantity += 1;
+            cartState.cart[productIndex].quantity += 1;
           } else {
-            cart.value.push(product.value);
-            console.log(cart.value);
+            cartState.cart.push(productState.product);
+            console.log(cartState.cart);
           }
-          product.value.stock -= 1;
+          productState.product.stock -= 1;
         }
         const discountCodes = ref(["PLATZI20", "JMRMEJIA"]);
 
@@ -140,18 +142,17 @@
           const discountCodeIndex = discountCodes.value.indexOf(
             event.target.value
           );
+          console.log(discountCodeIndex)
           if (discountCodeIndex >= 0) {
-            product.value.price /= 2;
-            discountCodes.value.splice(discountCodeIndex, 1);
+            productState.product.price /= 2;
+            discountCodes.splice(discountCodeIndex, 1);
           }
         }
 
         return {
-          product,
-          activeImage,
+          ...toRefs(productState),
 
-          cartOpen,
-          cart,
+          ...toRefs(cartState),
           addToCart,
 
           applyDiscount,
