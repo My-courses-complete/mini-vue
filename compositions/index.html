@@ -45,78 +45,11 @@
   </body>
   <script src="https://unpkg.com/vue@next"></script>
   <script>
-    const { createApp, ref, reactive, toRefs, watch, computed } = Vue;
+    const { createApp, ref, reactive, toRefs, watch, computed, onMounted } = Vue;
 
     const app = createApp({
       setup() {
-        const products = ref([
-          {
-            name: "Camara",
-            price: 450_000,
-            stock: 10,
-            content: `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Veritatis
-              velit sequi adipisci, laboriosam minima dignissimos eius facere
-              iste, distinctio fugiat dicta voluptatibus, fuga officiis vel saepe
-              perspiciatis nobis quam? Autem!`,
-            images: [
-              {
-                image: "../images/camara.jpg",
-                thumbnail: "../images/camara-thumb.jpg",
-              },
-              {
-                image: "../images/camara-2.jpg",
-                thumbnail: "../images/camara-2-thumb.jpg",
-              },
-            ],
-            new: true,
-            offer: false,
-            quantity: 1,
-          },
-          {
-            name: "Camara PL2",
-            price: 350_000,
-            stock: 7,
-            content: `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Veritatis
-              velit sequi adipisci, laboriosam minima dignissimos eius facere
-              iste, distinctio fugiat dicta voluptatibus, fuga officiis vel saepe
-              perspiciatis nobis quam? Autem!`,
-            images: [
-              {
-                image: "../images/camara.jpg",
-                thumbnail: "../images/camara-thumb.jpg",
-              },
-              {
-                image: "../images/camara-2.jpg",
-                thumbnail: "../images/camara-2-thumb.jpg",
-              },
-            ],
-            new: false,
-            offer: true,
-            quantity: 1,
-          },
-          {
-            name: "Camara cheat",
-            price: 150_000,
-            stock: 1,
-            content: `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Veritatis
-              velit sequi adipisci, laboriosam minima dignissimos eius facere
-              iste, distinctio fugiat dicta voluptatibus, fuga officiis vel saepe
-              perspiciatis nobis quam? Autem!`,
-            images: [
-              {
-                image: "../images/camara.jpg",
-                thumbnail: "../images/camara-thumb.jpg",
-              },
-              {
-                image: "../images/camara-2.jpg",
-                thumbnail: "../images/camara-2-thumb.jpg",
-              },
-            ],
-            new: true,
-            offer: true,
-            quantity: 1,
-          },
-        ]);
+        const products = ref([]);
         const cartState = reactive({
           cartOpen: false,
           cart: [],
@@ -126,7 +59,7 @@
               const prevQuantity = prev.quantity || 1;
               return prevPrice * prevQuantity + curr.price * curr.quantity;
             }, 0);
-          })
+          }),
           // total: 0,
         });
 
@@ -153,6 +86,18 @@
         //     return prevPrice * prevQuantity + curr.price * curr.quantity;
         //   }, 0);
         // });
+
+        onMounted(() => {
+          console.log("Mounted")
+        })
+
+        // setup() === created()
+
+        fetch("https://my-json-server.typicode.com/iosamuel/demo/products")
+          .then((res) => res.json())
+          .then((data) => {
+            products.value = data;
+          });
 
         return {
           ...toRefs(cartState),
