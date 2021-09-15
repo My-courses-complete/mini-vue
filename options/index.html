@@ -50,74 +50,7 @@
     const app = createApp({
       data() {
         return {
-          products: [
-            {
-              name: "Camara",
-              price: 450_000,
-              stock: 10,
-              content: `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Veritatis
-              velit sequi adipisci, laboriosam minima dignissimos eius facere
-              iste, distinctio fugiat dicta voluptatibus, fuga officiis vel saepe
-              perspiciatis nobis quam? Autem!`,
-              images: [
-                {
-                  image: "../images/camara.jpg",
-                  thumbnail: "../images/camara-thumb.jpg",
-                },
-                {
-                  image: "../images/camara-2.jpg",
-                  thumbnail: "../images/camara-2-thumb.jpg",
-                },
-              ],
-              new: true,
-              offer: false,
-              quantity: 1,
-            },
-            {
-              name: "Camara PL2",
-              price: 350_000,
-              stock: 7,
-              content: `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Veritatis
-              velit sequi adipisci, laboriosam minima dignissimos eius facere
-              iste, distinctio fugiat dicta voluptatibus, fuga officiis vel saepe
-              perspiciatis nobis quam? Autem!`,
-              images: [
-                {
-                  image: "../images/camara.jpg",
-                  thumbnail: "../images/camara-thumb.jpg",
-                },
-                {
-                  image: "../images/camara-2.jpg",
-                  thumbnail: "../images/camara-2-thumb.jpg",
-                },
-              ],
-              new: false,
-              offer: true,
-              quantity: 1,
-            },
-            {
-              name: "Camara cheat",
-              price: 150_000,
-              stock: 1,
-              content: `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Veritatis
-              velit sequi adipisci, laboriosam minima dignissimos eius facere
-              iste, distinctio fugiat dicta voluptatibus, fuga officiis vel saepe
-              perspiciatis nobis quam? Autem!`,
-              images: [
-                {
-                  image: "../images/camara.jpg",
-                  thumbnail: "../images/camara-thumb.jpg",
-                },
-                {
-                  image: "../images/camara-2.jpg",
-                  thumbnail: "../images/camara-2-thumb.jpg",
-                },
-              ],
-              new: true,
-              offer: true,
-              quantity: 1,
-            },
-          ],
+          products: [],
           cartOpen: true,
 
           // total: 0,
@@ -158,6 +91,17 @@
             return prevPrice * prevQuantity + curr.price * curr.quantity;
           }, 0);
         },
+      },
+      beforeCreate() {
+        console.log("Before create");
+      },
+      created() {
+        console.log("Created");
+        fetch("https://my-json-server.typicode.com/iosamuel/demo/products")
+          .then((res) => res.json())
+          .then((data) => {
+            this.products = data;
+          });
       },
     });
   </script>
